@@ -9,9 +9,10 @@ use App\Http\Controllers\AIAnalysisController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test', function () {
-    return 'API routes are loaded!';
+Route::get('/api/documentation', function () {
+    return view('l5-swagger::index');
 });
+
 
 Route::apiResource('stories', StoryController::class);
 Route::apiResource('contents', ContentController::class);
