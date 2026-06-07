@@ -57,9 +57,9 @@ export const MY_SPACE_USER = {
 };
 
 export const MY_SPACE_STATS = [
-  { value: "5", label: "طلبات تحقق" },
-  { value: "12", label: "قصص محفوظة" },
-  { value: "3", label: "دورات منجزة" },
+  { value: "5", numericValue: 5, label: "طلبات تحقق" },
+  { value: "12", numericValue: 12, label: "قصص محفوظة" },
+  { value: "3", numericValue: 3, label: "دورات منجزة" },
 ];
 
 export const MY_SPACE_ALERTS = [

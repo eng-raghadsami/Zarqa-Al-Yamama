@@ -1,4 +1,6 @@
 import { MY_SPACE_IMAGES } from "@website/constants/mySpaceImages";
+import { EDITOR_IMAGE_FALLBACKS } from "@website/constants/editorImages";
+import { ADMIN_IMAGES } from "@admin/constants/adminImages";
 
 export const SITE_LOGO =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuCwETDnAo27sVhZY3SpgYYKHTPluKhVuATAx-x-dXjXJ2Fkzz7dVQs_O6E-c2Oufpvm3GYVD3AaWTIaQK3qZ3eXlDW26IokpTj-D6Rkczmk262u9ShWNwFOOL7S3hrVlvSc7rv20lsoT2pwDUlG33e1ZrhmH0cBtRxcf5s_Nx2HxLp44bL5OapAfrJdvz0_4ymjonP_BrN1TvRrSupFV-woNwbvHZ0hr1YgyKdrcKLJ-yXgqVYdIvGMSIm7WMMkvqsufz8sFO7yYT_E";
@@ -27,3 +29,8 @@ export const VERIFIED_NEWS_AVATAR = TERMINOLOGY_AVATAR;
 
 export const MY_SPACE_NAV_AVATAR = MY_SPACE_IMAGES.navAvatar;
 export const MY_SPACE_PROFILE_AVATAR = MY_SPACE_IMAGES.userAvatar;
+
+export const EDITOR_NAV_AVATAR = EDITOR_IMAGE_FALLBACKS.navAvatar;
+export const EDITOR_ARTICLE_IMAGE = EDITOR_IMAGE_FALLBACKS.articleImage;
+
+export const ADMIN_NAV_AVATAR = ADMIN_IMAGES.navAvatar;

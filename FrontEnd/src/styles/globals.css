@@ -202,6 +202,122 @@ body {
   background-color: #f8f9fa;
   min-height: 100vh;
 }
+.editor-page-bg {
+  background-color: #f8f9fa;
+  background-image:
+    radial-gradient(circle at 100% 0%, rgba(229, 231, 235, 0.3) 0%, transparent 35%),
+    radial-gradient(circle at 0% 100%, rgba(212, 175, 55, 0.03) 0%, transparent 35%);
+  min-height: 100vh;
+}
+.disinformation-archive-page-bg {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e5e7eb 100%);
+  min-height: 100vh;
+}
+.archive-radar-line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.2),
+    transparent
+  );
+  animation: archive-radar-sweep 4s infinite linear;
+}
+@keyframes archive-radar-sweep {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1000%);
+  }
+}
+.archive-sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.archive-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.archive-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 10px;
+}
+.admin-page-bg {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e5e7eb 100%);
+  min-height: 100vh;
+}
+.admin-radar-line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.2),
+    transparent
+  );
+  animation: archive-radar-sweep 4s infinite linear;
+}
+.admin-sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.admin-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.admin-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 10px;
+}
+.editor-glass-tooltip {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+.editor-radar-line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.2),
+    transparent
+  );
+  height: 1px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: editor-radar-sweep 4s linear infinite;
+}
+@keyframes editor-radar-sweep {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+.editor-floating {
+  animation: editor-float 5s ease-in-out infinite;
+}
+@keyframes editor-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
 .hero-pattern {
   background-image: radial-gradient(
     circle at 2px 2px,

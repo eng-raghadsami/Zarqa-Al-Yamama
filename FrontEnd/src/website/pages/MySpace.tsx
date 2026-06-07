@@ -2,6 +2,10 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { WEBSITE_ROUTES } from "@core/constants/routes";
 import { MY_SPACE_PROFILE_AVATAR } from "@website/constants/brand";
+import AnimatedStatNumber, {
+  AnimatedCircularProgress,
+  AnimatedLinearProgress,
+} from "@shared/components/AnimatedStatNumber";
 import type {
   LibraryItemType,
   VerificationRequest,
@@ -173,10 +177,6 @@ export default function MySpace() {
   const completedRequests = VERIFICATION_REQUESTS.filter((r) => r.status === "completed");
   const primaryCourse = LEARNING_COURSES.find((c) => c.variant === "circular");
   const linearCourse = LEARNING_COURSES.find((c) => c.variant === "linear");
-  const circleCircumference = 276;
-  const circleOffset = primaryCourse
-    ? circleCircumference * (1 - primaryCourse.progress / 100)
-    : 0;
 
   return (
     <div className="max-w-container-max mx-auto" dir="rtl">
@@ -270,9 +270,11 @@ export default function MySpace() {
                   key={stat.label}
                   className="bg-white/5 backdrop-blur-lg border border-white/10 p-5 rounded-2xl text-center min-w-[100px] md:min-w-[120px] transition-transform hover:-translate-y-1"
                 >
-                  <span className="block font-stats-number text-gold-metallic-start mb-1">
-                    {stat.value}
-                  </span>
+                  <AnimatedStatNumber
+                    target={stat.numericValue}
+                    className="block font-stats-number text-gold-metallic-start mb-1"
+                    duration={2000}
+                  />
                   <span className="text-white/60 text-xs font-label-bold">
                     {stat.label}
                   </span>
@@ -392,34 +394,10 @@ export default function MySpace() {
               <div className="space-y-10">
                 {primaryCourse && (
                   <div className="flex flex-col items-center">
-                    <div className="relative flex items-center justify-center">
-                      <svg className="w-24 h-24 transform -rotate-90" aria-hidden>
-                        <circle
-                          className="text-mist-grey"
-                          cx="48"
-                          cy="48"
-                          fill="transparent"
-                          r="44"
-                          stroke="currentColor"
-                          strokeWidth="6"
-                        />
-                        <circle
-                          className="text-gold-metallic-start transition-all duration-1000"
-                          cx="48"
-                          cy="48"
-                          fill="transparent"
-                          r="44"
-                          stroke="currentColor"
-                          strokeDasharray={circleCircumference}
-                          strokeDashoffset={circleOffset}
-                          strokeLinecap="round"
-                          strokeWidth="6"
-                        />
-                      </svg>
-                      <span className="absolute font-stats-number text-xl text-primary">
-                        {primaryCourse.progress}%
-                      </span>
-                    </div>
+                    <AnimatedCircularProgress
+                      target={primaryCourse.progress}
+                      duration={2000}
+                    />
                     <div className="text-center mt-4">
                       <p className="font-label-bold text-sm text-primary mb-1">
                         {primaryCourse.title}
@@ -437,18 +415,11 @@ export default function MySpace() {
                   </div>
                 )}
                 {linearCourse && (
-                  <div className="space-y-3 pt-4 border-t border-mist-grey/50">
-                    <div className="flex justify-between text-xs font-label-bold">
-                      <span className="text-on-surface-variant">{linearCourse.title}</span>
-                      <span className="text-primary">{linearCourse.progress}%</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-mist-grey rounded-full overflow-hidden relative" dir="rtl">
-                      <div
-                        className="absolute top-0 right-0 h-full bg-primary transition-all duration-700"
-                        style={{ width: `${linearCourse.progress}%` }}
-                      />
-                    </div>
-                  </div>
+                  <AnimatedLinearProgress
+                    target={linearCourse.progress}
+                    title={linearCourse.title}
+                    duration={2000}
+                  />
                 )}
               </div>
             </div>

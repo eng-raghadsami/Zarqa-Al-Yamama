@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { WEBSITE_ROUTES } from "@core/constants/routes";
+import { ADMIN_ROUTES, WEBSITE_ROUTES } from "@core/constants/routes";
 
 type SettingsItem = {
   id: string;
@@ -8,6 +8,7 @@ type SettingsItem = {
   icon: string;
   href?: string;
   onClick?: () => void;
+  roleEntry?: boolean;
 };
 
 const SETTINGS_ITEMS: SettingsItem[] = [
@@ -34,6 +35,20 @@ const SETTINGS_ITEMS: SettingsItem[] = [
     label: "المساعدة",
     icon: "help",
     href: "#",
+  },
+  {
+    id: "editor",
+    label: "الدخول كمحرر",
+    icon: "edit_note",
+    href: WEBSITE_ROUTES.EDITOR_SPACE,
+    roleEntry: true,
+  },
+  {
+    id: "admin",
+    label: "الدخول كمدير",
+    icon: "admin_panel_settings",
+    href: ADMIN_ROUTES.ROOT,
+    roleEntry: true,
   },
 ];
 
@@ -83,7 +98,11 @@ export default function SettingsDropdown({ className = "" }: SettingsDropdownPro
               <li key={item.id}>
                 {item.href ? (
                   <Link
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors border-b border-outline-variant/10 last:border-0"
+                    className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors border-b border-outline-variant/10 last:border-0 ${
+                      item.roleEntry
+                        ? "text-gold-metallic-start font-label-bold hover:bg-gold-metallic-start/10 hover:text-primary border-t border-outline-variant/20"
+                        : "text-on-surface-variant hover:bg-surface-container-low hover:text-primary"
+                    }`}
                     to={item.href}
                     onClick={() => setOpen(false)}
                   >

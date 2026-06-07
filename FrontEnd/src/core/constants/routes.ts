@@ -38,6 +38,8 @@ export const WEBSITE_ROUTES = {
   VERIFIED_NEWS: "/verified-news",
   verifiedNewsDetail: (slug: string) => `/verified-news/${slug}` as const,
   MY_SPACE: "/my-space",
+  EDITOR_SPACE: "/editor-space",
+  EDITOR_DISINFORMATION_ARCHIVE: "/editor-space/disinformation-archive",
 } as const;
 
 export const ADMIN_ROUTES = {

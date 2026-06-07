@@ -48,6 +48,15 @@ const MySpaceLayout = React.lazy(
   () => import("@website/layouts/MySpaceLayout"),
 );
 const MySpace = React.lazy(() => import("@website/pages/MySpace"));
+const EditorLayout = React.lazy(
+  () => import("@website/layouts/EditorLayout"),
+);
+const EditorContentReview = React.lazy(
+  () => import("@website/pages/EditorContentReview"),
+);
+const DisinformationArchive = React.lazy(
+  () => import("@website/pages/DisinformationArchive"),
+);
 const AdminLayout = React.lazy(() => import("@admin/layouts/AdminLayout"));
 const AdminDashboard = React.lazy(() => import("@admin/pages/Dashboard"));
 const NotFound = React.lazy(() => import("@shared/components/NotFound"));
@@ -258,6 +267,32 @@ export const router = createBrowserRouter([
         element: (
           <Suspense>
             <MySpace />
+          </Suspense>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/editor-space",
+    element: (
+      <Suspense>
+        <EditorLayout />
+      </Suspense>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <Suspense>
+            <EditorContentReview />
+          </Suspense>
+        ),
+      },
+      {
+        path: "disinformation-archive",
+        element: (
+          <Suspense>
+            <DisinformationArchive />
           </Suspense>
         ),
       },

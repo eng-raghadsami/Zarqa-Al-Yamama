@@ -1,12 +1,47 @@
 import { Link } from "react-router-dom";
 import { WEBSITE_ROUTES } from "@core/constants/routes";
+import AnimatedStatNumber from "@shared/components/AnimatedStatNumber";
 
-const HERO_STATS = [
-  { icon: "radar", value: "24/7", label: "مراقبة ذكية" },
-  { icon: "database", value: "1.2M+", label: "بيانات منشورة" },
-  { icon: "hub", value: "25K+", label: "مصدر تم تحليله" },
-  { icon: "verified_user", value: "97%", label: "دقة التحليل" },
-] as const;
+type HeroStat =
+  | {
+      icon: string;
+      label: string;
+      staticValue: string;
+    }
+  | {
+      icon: string;
+      label: string;
+      target: number;
+      decimals?: number;
+      prefix?: string;
+      suffix?: string;
+      grouping?: boolean;
+    };
+
+const HERO_STATS: HeroStat[] = [
+  { icon: "radar", staticValue: "24/7", label: "مراقبة ذكية" },
+  {
+    icon: "database",
+    target: 1.2,
+    suffix: "M+",
+    decimals: 1,
+    label: "بيانات منشورة",
+  },
+  {
+    icon: "hub",
+    target: 25,
+    suffix: "K+",
+    decimals: 0,
+    label: "مصدر تم تحليله",
+  },
+  {
+    icon: "verified_user",
+    target: 97,
+    suffix: "%",
+    decimals: 0,
+    label: "دقة التحليل",
+  },
+];
 
 export default function Home() {
   return (
@@ -82,9 +117,21 @@ export default function Home() {
               <span className="material-symbols-outlined text-secondary text-[32px]">
                 {stat.icon}
               </span>
-              <span className="font-stats-number text-stats-number text-primary">
-                {stat.value}
-              </span>
+              {"staticValue" in stat ? (
+                <span className="font-stats-number text-stats-number text-primary">
+                  {stat.staticValue}
+                </span>
+              ) : (
+                <AnimatedStatNumber
+                  target={stat.target}
+                  decimals={stat.decimals}
+                  prefix={stat.prefix}
+                  suffix={stat.suffix}
+                  grouping={stat.grouping}
+                  className="font-stats-number text-stats-number text-primary"
+                  duration={2000}
+                />
+              )}
               <span className="font-label-bold text-label-bold text-on-surface-variant">
                 {stat.label}
               </span>

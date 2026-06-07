@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { WEBSITE_ROUTES } from "@core/constants/routes";
+import { ADMIN_ROUTES, WEBSITE_ROUTES } from "@core/constants/routes";
 import LibraryNavDropdown, {
   resolveLibraryNavId,
 } from "@website/components/LibraryNavDropdown";
@@ -41,6 +41,12 @@ function resolveSearchPlaceholder(pathname: string): string {
   }
   if (pathname.startsWith(WEBSITE_ROUTES.MEDIA_LITERACY)) {
     return "ابحث في دورات المعرفة الإعلامية...";
+  }
+  if (pathname.startsWith(WEBSITE_ROUTES.EDITOR_DISINFORMATION_ARCHIVE)) {
+    return "بحث في الأرشيف...";
+  }
+  if (pathname.startsWith(ADMIN_ROUTES.ROOT)) {
+    return "بحث في النظام...";
   }
   return "ابحث في المنصة...";
 }
