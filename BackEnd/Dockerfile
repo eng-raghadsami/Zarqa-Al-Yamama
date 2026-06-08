@@ -4,13 +4,15 @@ FROM php:8.2-cli
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # تحديث الحزم وتثبيت الإضافات المطلوبة
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     zip \
     libpq-dev \
     && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    && docker-php-ext-install pdo pdo_pgsql zip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # تحديد مجلد العمل
 WORKDIR /app
