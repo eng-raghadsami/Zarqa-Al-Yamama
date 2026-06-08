@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "zarqa-al-yamama",
+  "private_key_id": "1f0c946f93bf8f5f255f56bd387e7bc260b5ff13",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDAdTEwucYrGOzl\njVUpiU/y4q7M6C8+HHTuRk1eR90BtnYIDZ/k2jHnG5B1TePLVIyTcCJ4gPGWaclp\nBeRUbSQ7ym/DAvyAsESo+K+sWcqGCmA1uVTKLtTe8hOjue9OOXe+aLxrfXbiR374\nJMP5JrdbWV1zEbcG7IdNq0kCSoAuMxFKhsQgH/X9HdqqBO0q6WHYjJmuWgpJkodd\nV4lfqjgWycydqSWhWfWwMTpZWKaNihwLxF+h/C73UiUmnHyo1fdep4/Dkfyz21jd\nbpUAMtWLH7WndhyTUN1ruH5KoTDM1SpQvRKwP5mAQNpfF8Ja7N71rE2iNdiiEAC1\nPX0Bxo9JAgMBAAECgf8VipJPiUCHfq8FUUxoKIoPOTxrKRuqa8ANOjOpxiZPKE5I\n04xW858EvxrsLa4gRUyKbzPiq3he8T0toaxs2mgCl/6bo/7aQS9GzhjbnfYqqCYI\n8Q4gMLtAYGHmDwc5/yD7rvh7rQ9cf3zAhJgIVPRsAChX/cEmDxhQ8dEwUutUtmup\nM5kaPnxgpeKzbKJMmhYW2ICVeiRdwp7cOgzydhSlpJRWiyVqg4vNchDkElNn7iu4\nDYdBHXHAR6YgNWjIOykBrcV+fz15yjJM/xiOOsnAlgccPAtTXNahyKFUiwdh69fT\n9rGwu1VYwaxvqzJsimqI9rIA3AkNyxw7UWbFg+kCgYEA94w39YhLltjNFLaXn1CJ\nrn602Jg15lVv9dZ8rD9xBZuq+hU74Bp+LppTFBMkWWfp3lUOu4eGozrbuqFK4VE7\n2zcAaor8grQBSS44AHCWzANhQUtjz6N30aUVFaR/QrEtkBAUD8fo7Z4Hz/Mx5YvT\nSDFG8JrIqsS+M273hyQi670CgYEAxwdwktW3v6UCe1w2bNfsPB+wy1Y9RJ9yEEdG\nLxK3Zx5oDXZ9kBxHq4SW0dREO9KV7xB1lE0QzpCJhXqQhRbG8+Ot8HnhCuiPrJk3\nKOKbX0ENDDSdzkoFoEUIJ1+EF1IMrKSp2Ev27ohrt0KygOuPKYFupSQlBAdlo9C1\nIsSchH0CgYA8oM/3x7jTqieYQhwifcQqw4ehYK4ayqQQLsb8HNGekQCwHVE70uFC\norNkQEfvyb6CoIxqK4gzJDA6plRDmPSy/OaSMZYkoNeLx9EZcnnMX6uLJV69tQic\nhPUEBvTQLbq+BOIU9146DDFXofV/hd5qWP9J4G7zPBplWHExXQ1cdQKBgQCbHAY0\nuRB579xuTWAxFVoLRVtgLLaU+3pGi3V8DCcY206WZ2jV3eRRHIT5xGblBGpLJNWt\nnR3jDivO9cUZo7Wrrx4I0sN63+HQzpt5ZplV8/l6MKtncLLPw9zl6n+kORKdnbqs\nUg+AuJrR+M3qwSoSW8fiNbgPWsBwmaABF58vdQKBgQCFuApLZ9jpxdrg05OFqVMy\nx8ShMpJe7B2V3h2J/lzFZr7JD3eCQ2DDSWXFk6wqPKGu51AlmiYjsd0oWtpN6KL4\ngWBgVvuhaKtuqxESlSK3DmsX3+4laYh/Ipnqg3OxlFg/MzdtxPYffhiqMjngf+Ae\n0XI4l2VnUhOr8xz6TrznHA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "zarqa-al-yamama@zarqa-al-yamama.iam.gserviceaccount.com",
+  "client_id": "101452943357334161098",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/zarqa-al-yamama%40zarqa-al-yamama.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
