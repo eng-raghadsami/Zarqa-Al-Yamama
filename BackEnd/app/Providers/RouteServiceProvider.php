@@ -7,10 +7,16 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 
 class RouteServiceProvider extends ServiceProvider
 {
+    /**
+     * The path to the "home" route for your application.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
     public function boot(): void
     {
         $this->routes(function () {
-
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));

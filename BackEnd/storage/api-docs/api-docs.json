@@ -9,6 +9,9 @@
         {
             "url": "https://zurqa-al-yamama.onrender.com",
             "description": "Production Server"
+        },
+        {
+            "url": "/api"
         }
     ],
     "paths": {
