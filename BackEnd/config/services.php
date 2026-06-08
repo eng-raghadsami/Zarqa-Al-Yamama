@@ -34,5 +34,21 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'google' => [
+    'vision_key' => env('GOOGLE_APPLICATION_CREDENTIALS'),
+    'project_id' => env('GOOGLE_CLOUD_PROJECT'),
+],
+
+'openai' => [
+    'key' => env('OPENAI_API_KEY'),
+],
+
+'deepware' => [
+    'key' => env('DEEPWARE_API_KEY'),
+],
+
+'perspective' => [
+    'key' => env('PERSPECTIVE_API_KEY'),
+],
 
 ];

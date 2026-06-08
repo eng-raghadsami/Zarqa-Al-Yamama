@@ -424,6 +424,36 @@
                 }
             }
         },
+        "/api/images/analyze": {
+            "post": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Analyze an uploaded image",
+                "operationId": "0f83a75a8d1dfbb660ebdbdd28598834",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Analysis result"
+                    }
+                }
+            }
+        },
         "/api/published": {
             "get": {
                 "tags": [
@@ -558,6 +588,36 @@
                 "responses": {
                     "200": {
                         "description": "Published content deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/reports/analyze": {
+            "post": {
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Analyze an uploaded report (PDF or image)",
+                "operationId": "07df7f3e8c9945b16a66ab7d8d85adde",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "report": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Analysis result"
                     }
                 }
             }
@@ -818,6 +878,35 @@
                 }
             }
         },
+        "/api/texts/analyze": {
+            "post": {
+                "tags": [
+                    "Texts"
+                ],
+                "summary": "Analyze plain text",
+                "operationId": "a011f6a3324c874af2a5dd9ac8df3fec",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "text": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Analysis result"
+                    }
+                }
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [
@@ -966,8 +1055,16 @@
             "description": "Contents"
         },
         {
+            "name": "Images",
+            "description": "Images"
+        },
+        {
             "name": "Published",
             "description": "Published"
+        },
+        {
+            "name": "Reports",
+            "description": "Reports"
         },
         {
             "name": "Reviews",
@@ -976,6 +1073,10 @@
         {
             "name": "Stories",
             "description": "Stories"
+        },
+        {
+            "name": "Texts",
+            "description": "Texts"
         },
         {
             "name": "Users",
