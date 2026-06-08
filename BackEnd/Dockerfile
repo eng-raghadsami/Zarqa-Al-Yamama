@@ -1,14 +1,15 @@
-# استخدام صورة PHP CLI
 FROM php:8.2-cli
 
 # تثبيت Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# تثبيت إضافات PHP المطلوبة
+# تحديث الحزم وتثبيت الإضافات المطلوبة
 RUN apt-get update && apt-get install -y \
-    libpq-dev \
+    git \
     unzip \
     zip \
+    libpq-dev \
+    && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql zip
 
 # تحديد مجلد العمل
@@ -17,17 +18,17 @@ WORKDIR /app
 # نسخ المشروع
 COPY . .
 
-# تثبيت المكتبات بدون dev (لأن IdeHelper مربوط بالبيئة local فقط)
+# تثبيت المكتبات بدون dev
 RUN composer install --no-dev --optimize-autoloader
 
-# تنظيف الكاش وضبط المشروع
+# تنظيف الكاش
 RUN php artisan config:clear \
     && php artisan route:clear \
     && php artisan cache:clear \
     && php artisan view:clear
 
-# توليد Swagger docs (إذا كنتِ تستخدمين l5-swagger)
+# توليد Swagger docs
 RUN php artisan l5-swagger:generate || true
 
-# تشغيل السيرفر مع المهاجرات
+# تشغيل السيرفر
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT

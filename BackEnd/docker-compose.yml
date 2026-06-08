@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zarqa_app
+    restart: always
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      L5_SWAGGER_CONST_HOST: http://localhost:8000
+      L5_SWAGGER_GENERATE_ALWAYS: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: zarqa_yamama
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - db
+    command: >
+      sh -c "php artisan migrate --force &&
+             php artisan l5-swagger:generate &&
+             php artisan serve --host=0.0.0.0 --port=8000"
+
+  db:
+    image: postgres:15
+    container_name: zarqa_db
+    restart: always
+    environment:
+      POSTGRES_DB: zarqa_yamama
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

@@ -16,7 +16,7 @@ class ReportAnalysisController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/reports/analyze",
+        path: "/reports/analyze",
         summary: "Analyze an uploaded report (PDF or image)",
         tags: ["Reports"],
         requestBody: new OA\RequestBody(

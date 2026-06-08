@@ -424,13 +424,13 @@
                 }
             }
         },
-        "/api/images/analyze": {
+        "/images/analyze": {
             "post": {
                 "tags": [
                     "Images"
                 ],
                 "summary": "Analyze an uploaded image",
-                "operationId": "0f83a75a8d1dfbb660ebdbdd28598834",
+                "operationId": "be92406c21b0216613bbd9c0be0ac872",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -592,13 +592,13 @@
                 }
             }
         },
-        "/api/reports/analyze": {
+        "/reports/analyze": {
             "post": {
                 "tags": [
                     "Reports"
                 ],
                 "summary": "Analyze an uploaded report (PDF or image)",
-                "operationId": "07df7f3e8c9945b16a66ab7d8d85adde",
+                "operationId": "13f5f7c2bd4bf0892691144b8431795b",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -878,13 +878,13 @@
                 }
             }
         },
-        "/api/texts/analyze": {
+        "/texts/analyze": {
             "post": {
                 "tags": [
                     "Texts"
                 ],
                 "summary": "Analyze plain text",
-                "operationId": "a011f6a3324c874af2a5dd9ac8df3fec",
+                "operationId": "6ddfd61cb4d5b470ac72b622fa097aa2",
                 "requestBody": {
                     "required": true,
                     "content": {

@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 class ImageAnalysisController extends Controller
 {
     #[OA\Post(
-        path: "/api/images/analyze",
+        path: "/images/analyze",
         summary: "Analyze an uploaded image",
         tags: ["Images"],
         requestBody: new OA\RequestBody(
