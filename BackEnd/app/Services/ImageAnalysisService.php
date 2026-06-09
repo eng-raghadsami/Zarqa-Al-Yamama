@@ -56,7 +56,6 @@ class ImageAnalysisService
                             ['text' => 'حلّل الصورة كخبير إشراف محتوى وأعد JSON فقط بالمعايير المحددة.'],
                             ['inline_data' => ['mime_type' => $mimeType, 'data' => base64_encode($imageData)]]
                         ]]],
-                        'generationConfig' => ['responseMimeType' => 'application/json'],
                     ]
                 ]
             );

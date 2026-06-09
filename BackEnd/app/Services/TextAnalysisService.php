@@ -58,7 +58,6 @@ class TextAnalysisService
                     'headers' => ['Content-Type' => 'application/json', 'x-goog-api-key' => $geminiKey],
                     'json' => [
                         'contents' => [['parts' => [['text' => $prompt]]]],
-                        'generationConfig' => ['responseMimeType' => 'application/json'],
                     ],
                 ]
             );
