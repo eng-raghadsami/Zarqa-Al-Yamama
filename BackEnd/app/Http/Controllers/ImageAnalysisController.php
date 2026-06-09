@@ -62,6 +62,8 @@ public function analyze(Request $request, ImageAnalysisService $service)
         'forged_percentage'       => $scores['forged_percentage'] ?? 0,
         'description'             => $results['description'] ?? '',
         'actions'                 => $results['actions'],
+        'criteria_scores'         => $scores,
+        'errors'                  => $results['errors'] ?? [],
         ...( $blurredImageUrl ? ['blurred_image_url' => $blurredImageUrl] : []),
     ]);
 }
