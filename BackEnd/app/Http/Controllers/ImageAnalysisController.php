@@ -31,11 +31,11 @@ class ImageAnalysisController extends Controller
     public function analyze(Request $request, ImageAnalysisService $service)
     {
         $request->validate([
-            'image' => 'required|file|mimes:jpg,jpeg,png'
+            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:10240'
         ]);
 
-        $path = $request->file('image')->getRealPath();
-        $results = $service->analyze($path);
+        $file = $request->file('image');
+        $results = $service->analyze($file->getRealPath(), $file->getMimeType());
 
         return response()->json($results);
     }
