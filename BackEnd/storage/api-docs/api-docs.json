@@ -7,6 +7,10 @@
     },
     "servers": [
         {
+            "url": "http://127.0.0.1:8000",
+            "description": "Local Server"
+        },
+        {
             "url": "https://zurqa-al-yamama.onrender.com",
             "description": "Production Server"
         },
@@ -15,425 +19,13 @@
         }
     ],
     "paths": {
-        "/api/analyses": {
-            "get": {
-                "tags": [
-                    "Analyses"
-                ],
-                "summary": "Get all analyses",
-                "operationId": "8a7d6185b1c05d35e6b5db806afa303c",
-                "responses": {
-                    "200": {
-                        "description": "List of analyses"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Analyses"
-                ],
-                "summary": "Create analysis",
-                "operationId": "951951bd28fd669059ba5338ec3bad91",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "content_id": {
-                                        "type": "integer"
-                                    },
-                                    "result": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    }
-                }
-            }
-        },
-        "/api/analyses/{id}": {
-            "get": {
-                "tags": [
-                    "Analyses"
-                ],
-                "summary": "Get analysis",
-                "operationId": "0a9cb2bf7e46aee5063bc3d69ffe3738",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Analyses"
-                ],
-                "summary": "Update analysis",
-                "operationId": "aa2ae35212ee71f7a0c18bf6ed7b816b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Analyses"
-                ],
-                "summary": "Delete analysis",
-                "operationId": "e3d37db6fe4782cd9d9102a8e2927c18",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted"
-                    }
-                }
-            }
-        },
-        "/api/categories": {
-            "get": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Get all categories",
-                "operationId": "3f5817a34833d0a1f4af4548dd3aeaba",
-                "responses": {
-                    "200": {
-                        "description": "List of categories"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Create a new category",
-                "operationId": "71fcad552bb0eaba9fb191fd8d8dcab0",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Politics"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Political related content"
-                                    },
-                                    "parent_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Category created successfully"
-                    }
-                }
-            }
-        },
-        "/api/categories/{id}": {
-            "get": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Get a single category",
-                "operationId": "c68e76d323c008827a9e47398b1583de",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Category details"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Update a category",
-                "operationId": "0e686b2748211cc688333ed705dc111f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Updated Politics"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "All political news and reports"
-                                    },
-                                    "parent_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Category updated successfully"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Delete a category",
-                "operationId": "4c12e22a7f8c617bd83bfa1fdc05428d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Category deleted successfully"
-                    }
-                }
-            }
-        },
-        "/api/contents": {
-            "get": {
-                "tags": [
-                    "Contents"
-                ],
-                "summary": "Get all contents",
-                "operationId": "794455e2ae76f0d16390c0d65573e5cf",
-                "responses": {
-                    "200": {
-                        "description": "List of contents"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Contents"
-                ],
-                "summary": "Create a new content",
-                "operationId": "28ee10be1de60782f9ecf184dbf4c4cf",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "New Content"
-                                    },
-                                    "body": {
-                                        "type": "string",
-                                        "example": "Content details"
-                                    },
-                                    "user_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "category_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "example": "story"
-                                    },
-                                    "status": {
-                                        "type": "string",
-                                        "example": "draft"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Content created successfully"
-                    }
-                }
-            }
-        },
-        "/api/contents/{id}": {
-            "get": {
-                "tags": [
-                    "Contents"
-                ],
-                "summary": "Get a single content",
-                "operationId": "1860dae49ccefc184b1d6d84b27039ae",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Content details"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Contents"
-                ],
-                "summary": "Update a content",
-                "operationId": "37af1b4468fb29809a50b7567eebcaec",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Updated Content Title"
-                                    },
-                                    "body": {
-                                        "type": "string",
-                                        "example": "Updated content details"
-                                    },
-                                    "category_id": {
-                                        "type": "integer",
-                                        "example": 3
-                                    },
-                                    "status": {
-                                        "type": "string",
-                                        "example": "approved"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Content updated successfully"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Contents"
-                ],
-                "summary": "Delete a content",
-                "operationId": "269ed286f9e98033c9e8ecafb43d005d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Content deleted successfully"
-                    }
-                }
-            }
-        },
-        "/images/analyze": {
+        "/api/images/analyze": {
             "post": {
                 "tags": [
                     "Images"
                 ],
                 "summary": "Analyze an uploaded image",
-                "operationId": "be92406c21b0216613bbd9c0be0ac872",
+                "operationId": "0f83a75a8d1dfbb660ebdbdd28598834",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -457,42 +49,50 @@
                 }
             }
         },
-        "/api/published": {
+        "/api/terms": {
             "get": {
                 "tags": [
-                    "Published"
+                    "Terms"
                 ],
-                "summary": "Get all published contents",
-                "operationId": "2c7ee7653e6d760543f7c3557828b512",
+                "summary": "Get all media terms",
+                "operationId": "738fc98f4c919c742ab3280b8f378616",
                 "responses": {
                     "200": {
-                        "description": "List of published contents"
+                        "description": "List of terms"
                     }
                 }
             },
             "post": {
                 "tags": [
-                    "Published"
+                    "Terms"
                 ],
-                "summary": "Create a new published content",
-                "operationId": "8f88a4c0f27509b62c4d8625fb326490",
+                "summary": "Create a media term",
+                "operationId": "9f08143164ba4f23caffa7edd937d10d",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "word",
+                                    "meaning"
+                                ],
                                 "properties": {
-                                    "content_id": {
-                                        "type": "integer",
-                                        "example": 1
+                                    "word": {
+                                        "type": "string",
+                                        "example": "مصدر مطلع"
                                     },
-                                    "journalist_id": {
-                                        "type": "integer",
-                                        "example": 2
+                                    "meaning": {
+                                        "type": "string",
+                                        "example": "تعبير يستخدم للإشارة إلى شخص لديه معلومات عن الموضوع دون ذكر اسمه."
                                     },
-                                    "editor_id": {
-                                        "type": "integer",
-                                        "example": 3
+                                    "category": {
+                                        "type": "string",
+                                        "example": "مصطلحات الأخبار"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 },
                                 "type": "object"
@@ -502,18 +102,18 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Published content created successfully"
+                        "description": "Term created successfully"
                     }
                 }
             }
         },
-        "/api/published/{id}": {
+        "/api/terms/{id}": {
             "get": {
                 "tags": [
-                    "Published"
+                    "Terms"
                 ],
-                "summary": "Get a single published content",
-                "operationId": "fefcf5260f91ff3effef07352f42cf0a",
+                "summary": "Get a single media term",
+                "operationId": "a7dadaea9acd0789825d922dc7096d1a",
                 "parameters": [
                     {
                         "name": "id",
@@ -526,16 +126,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Published content details"
+                        "description": "Term details"
                     }
                 }
             },
             "put": {
                 "tags": [
-                    "Published"
+                    "Terms"
                 ],
-                "summary": "Update a published content",
-                "operationId": "b42d1a56b35cd53e047af60143225f30",
+                "summary": "Update a media term",
+                "operationId": "2b43e4afae55816b48a0b9c64c31fb96",
                 "parameters": [
                     {
                         "name": "id",
@@ -552,13 +152,21 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "editor_id": {
-                                        "type": "integer",
-                                        "example": 3
+                                    "word": {
+                                        "type": "string",
+                                        "example": "مصدر رسمي"
                                     },
-                                    "updater_id": {
-                                        "type": "integer",
-                                        "example": 4
+                                    "meaning": {
+                                        "type": "string",
+                                        "example": "جهة أو شخص مخول بالتصريح باسم مؤسسة أو حكومة."
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "مصطلحات الأخبار"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 },
                                 "type": "object"
@@ -568,16 +176,16 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Published content updated successfully"
+                        "description": "Term updated successfully"
                     }
                 }
             },
             "delete": {
                 "tags": [
-                    "Published"
+                    "Terms"
                 ],
-                "summary": "Delete a published content",
-                "operationId": "1f68a7be8a4669bca7459a5a44f2ddc6",
+                "summary": "Delete a media term",
+                "operationId": "c54eb69f166863bfc8d5fb1e68957051",
                 "parameters": [
                     {
                         "name": "id",
@@ -590,261 +198,30 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Published content deleted successfully"
+                        "description": "Term deleted successfully"
                     }
                 }
             }
         },
-        "/reports/analyze": {
+        "/api/terms/match": {
             "post": {
                 "tags": [
-                    "Reports"
+                    "Terms"
                 ],
-                "summary": "Analyze an uploaded report (PDF or image)",
-                "operationId": "13f5f7c2bd4bf0892691144b8431795b",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "report": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Analysis result"
-                    }
-                }
-            }
-        },
-        "/api/reviews": {
-            "get": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Get all reviews",
-                "operationId": "346169ce6ab0c633530a7cedc1a25fab",
-                "responses": {
-                    "200": {
-                        "description": "List of reviews"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Create a new review",
-                "operationId": "154c71f5f72b459d998f5ea451bd4c96",
+                "summary": "Find media terms used in a text",
+                "operationId": "aa4b390632013abeb19ac93faa6c909f",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "text"
+                                ],
                                 "properties": {
-                                    "content_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "editor_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "notes": {
+                                    "text": {
                                         "type": "string",
-                                        "example": "Review notes"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Review created successfully"
-                    }
-                }
-            }
-        },
-        "/api/reviews/{id}": {
-            "get": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Get a single review",
-                "operationId": "a9949d3a965ed93ae30547c07eef7505",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review details"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Update a review",
-                "operationId": "17776becb9faf054b5c49bc83ad6c974",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review updated successfully"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Delete a review",
-                "operationId": "89986343b5dbd2b909c2764aeb7e4096",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review deleted successfully"
-                    }
-                }
-            }
-        },
-        "/api/stories": {
-            "get": {
-                "tags": [
-                    "Stories"
-                ],
-                "summary": "Get all stories",
-                "operationId": "16620e7cc42f977ac888f825133851c5",
-                "responses": {
-                    "200": {
-                        "description": "List of stories"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Stories"
-                ],
-                "summary": "Create a new story",
-                "operationId": "6d05b330fcdca8248b81afc179ca4c13",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "New Story"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "example": "Story details"
-                                    },
-                                    "category_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "user_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Story created successfully"
-                    }
-                }
-            }
-        },
-        "/api/stories/{id}": {
-            "get": {
-                "tags": [
-                    "Stories"
-                ],
-                "summary": "Get a single story",
-                "operationId": "e384c0507ded5cbed42584fe29f649a2",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Story details"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Stories"
-                ],
-                "summary": "Update a story",
-                "operationId": "0f1611d9a7868962fbbd1ed0a4dab215",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Updated Story Title"
+                                        "example": "نقلت وسائل الإعلام عن مصدر مطلع تفاصيل الخبر العاجل."
                                     }
                                 },
                                 "type": "object"
@@ -854,40 +231,18 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Story updated successfully"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Stories"
-                ],
-                "summary": "Delete a story",
-                "operationId": "68e0ce5276d043960434ccb1dcb4681d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Story deleted successfully"
+                        "description": "Matched terms"
                     }
                 }
             }
         },
-        "/texts/analyze": {
+        "/api/texts/analyze": {
             "post": {
                 "tags": [
                     "Texts"
                 ],
                 "summary": "Analyze plain text",
-                "operationId": "6ddfd61cb4d5b470ac72b622fa097aa2",
+                "operationId": "a011f6a3324c874af2a5dd9ac8df3fec",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -909,181 +264,20 @@
                     }
                 }
             }
-        },
-        "/api/users": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get all users",
-                "operationId": "c457726701591d1183b53aa71fc13441",
-                "responses": {
-                    "200": {
-                        "description": "List of users"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Create a new user",
-                "operationId": "592819a0265360b2014512d6dbfaf0e7",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Raghad"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "raghad@example.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "example": "secret123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "User created successfully"
-                    }
-                }
-            }
-        },
-        "/api/users/{id}": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get a single user",
-                "operationId": "36a33ff774d5cba33c039dec2c3e0287",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User details"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Update a user",
-                "operationId": "b9091397c8b25f12c6adb74be6ce3a5a",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Updated User Name"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "User updated successfully"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Delete a user",
-                "operationId": "fa56cffde745d3f152f95cbacd936c0b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User deleted successfully"
-                    }
-                }
-            }
         }
     },
     "tags": [
-        {
-            "name": "Analyses"
-        },
-        {
-            "name": "Categories",
-            "description": "Categories"
-        },
-        {
-            "name": "Contents",
-            "description": "Contents"
-        },
         {
             "name": "Images",
             "description": "Images"
         },
         {
-            "name": "Published",
-            "description": "Published"
-        },
-        {
-            "name": "Reports",
-            "description": "Reports"
-        },
-        {
-            "name": "Reviews",
-            "description": "Reviews"
-        },
-        {
-            "name": "Stories",
-            "description": "Stories"
+            "name": "Terms",
+            "description": "Terms"
         },
         {
             "name": "Texts",
             "description": "Texts"
-        },
-        {
-            "name": "Users",
-            "description": "Users"
         }
     ]
 }

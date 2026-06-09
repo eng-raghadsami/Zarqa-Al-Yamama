@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 class TextAnalysisController extends Controller
 {
     #[OA\Post(
-        path: "/texts/analyze",
+        path: "/api/texts/analyze",
         summary: "Analyze plain text",
         tags: ["Texts"],
         requestBody: new OA\RequestBody(

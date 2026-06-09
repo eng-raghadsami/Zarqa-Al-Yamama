@@ -39,8 +39,9 @@ return [
     'project_id' => env('GOOGLE_CLOUD_PROJECT'),
 ],
 
-'openai' => [
-    'key' => env('OPENAI_API_KEY'),
+'gemini' => [
+    'key' => env('GEMINI_API_KEY'),
+    'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
 ],
 
 'deepware' => [
@@ -49,6 +50,12 @@ return [
 
 'perspective' => [
     'key' => env('PERSPECTIVE_API_KEY'),
+],
+
+'huggingface' => [
+    'key' => env('HUGGINGFACE_API_KEY'),
+    'moderation_model' => env('HUGGINGFACE_MODERATION_MODEL', 'textdetox/xlmr-large-toxicity-classifier'),
+    'api_url' => env('HUGGINGFACE_API_URL', 'https://router.huggingface.co/hf-inference/models'),
 ],
 
 ];
