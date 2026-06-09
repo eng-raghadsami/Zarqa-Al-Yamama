@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PublishedContent extends Model
 {
     use HasFactory;
-    protected $table = 'published_content';
+    protected $table = 'published_contents';
     protected $fillable = ['content_id','journalist_id','editor_id','published_at','updated_by'];
 
     public function content()
