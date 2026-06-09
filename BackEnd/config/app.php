@@ -1,7 +1,10 @@
 <?php
 
 return [
-
+'aliases' => [
+    // ...
+    'Image' => Intervention\Image\Laravel\Facades\Image::class,
+],
     'name' => env('APP_NAME', 'Laravel'),
 
     'env' => env('APP_ENV', 'production'),
@@ -36,6 +39,8 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        App\Providers\RouteServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
