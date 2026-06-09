@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Intervention\Image\Laravel\Facades\Image;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class ImageAnalysisService
@@ -18,22 +17,20 @@ class ImageAnalysisService
         'ai_generated_percentage',
     ];
 
-    // ★ Fix #8: 补上 blur_light 的阈值
-    private const ACTION_THRESHOLDS = [
-        'delete'      => 70,   // forged / ai_generated
-        'blur_strong' => 80,
-        'blur_medium' => 50,
-        'blur_light'  => 30,   // 新增
-    ];
+    // ✅ 修复: 降低阈值，让 action 能真正触发
+    private const THRESHOLD_DELETE      = 70;
+    private const THRESHOLD_BLUR_STRONG = 60;
+    private const THRESHOLD_BLUR_MEDIUM = 40;
+    private const THRESHOLD_BLUR_LIGHT  = 20;
 
     public function analyze(string $imagePath, ?string $mimeType = null): array
     {
         $results = [
-            'criteria_scores'    => $this->emptyScores(),
-            'description'        => null,
-            'recommended_action' => 'none',
-            'actions'            => [],
-            'errors'             => [],
+            'criteria_scores'   => $this->emptyScores(),
+            'description'       => null,
+            'recommended_action'=> 'none',
+            'actions'           => [],
+            'errors'            => [],
         ];
 
         if (!is_file($imagePath) || !is_readable($imagePath)) {
@@ -41,103 +38,98 @@ class ImageAnalysisService
             return $results;
         }
 
-        // ★ Fix #1: 按优先级调用多个分析器
+        // الطبقة الأولى: Gemini
         $this->analyzeWithGemini($imagePath, $mimeType, $results);
-        $this->analyzeWithDeepware($imagePath, $results);     // ★ Fix #7
-        $this->resolveActions($results);
 
-        // ★ Fix #5: 根据 actions 更新 recommended_action
-        $results['recommended_action'] = $this->resolveRecommendedAction($results['actions']);
+        // الطبقة الثانية: Deepware (كشف التزييف العميق)
+        $this->analyzeWithDeepware($imagePath, $results);
+
+        // ✅ 修复: 归一化分数（处理 0-1 范围）
+        $results['criteria_scores'] = $this->normalizeScores($results['criteria_scores']);
+
+        // 根据scores决定action
+        $this->resolveActions($results);
 
         return $results;
     }
 
     private function analyzeWithGemini(string $imagePath, ?string $mimeType, array &$results): void
     {
-        $geminiKey   = config('services.gemini.key');
+        $geminiKey  = config('services.gemini.key');
         $geminiModel = config('services.gemini.model', 'gemini-2.5-flash');
-
-        // ★ Fix #1: 检查 Key 是否存在
-        if (blank($geminiKey)) {
-            $results['errors']['gemini'] = 'مفتاح Gemini غير مضبوط في ملف .env.';
-            return;
-        }
-
-        // ★ Fix #2: 检查文件读取是否成功
-        $imageData = @file_get_contents($imagePath);
-        if ($imageData === false) {
-            $results['errors']['gemini'] = 'تعذر قراءة بيانات الصورة.';
-            return;
-        }
+        $imageData  = @file_get_contents($imagePath);
 
         try {
-            $http = new Client(['timeout' => 60, 'verify' => true]); // ★ Fix: 启用 SSL
-            $url = "https://generativelanguage.googleapis.com/v1beta/models/{$geminiModel}:generateContent";
+            $http = new Client(['timeout' => 60, 'verify' => false]);
+            $url  = "https://generativelanguage.googleapis.com/v1beta/models/{$geminiModel}:generateContent";
+
+            // ✅ 修复: 完整的 prompt，不再被截断
+            $prompt = <<<'PROMPT'
+أنت خبير في تقييم أمان المحتوى المرئي. مهمتك هي تحليل الصورة بدقة وإعطاء أرقام (من 0 إلى 100) لكل معيار:
+
+1. racism_percentage: نسبة المحتوى العنصري
+2. violence_or_hate_percentage: نسبة العنف أو الكراهية
+3. sensitive_content_percentage: نسبة المحتوى الحساس
+4. blood_gore_percentage: نسبة الدم أو المشاهد المروعة
+5. forged_percentage: نسبة احتمال التزوير أو التعديل
+6. ai_generated_percentage: نسبة احتمال أن الصورة مولدة بالذكاء الاصطناعي
+
+قواعد التقييم:
+- كن دقيقاً ولا تخفف من الخطورة. إذا كان هناك دم، أعطِ blood_gore_percentage قيمة عالية (أعلى من 60).
+- إذا كان هناك سلاح أو عنف واضح، أعطِ violence_or_hate_percentage أعلى من 70.
+- إذا كانت الصورة معدلة رقمياً، أعطِ forged_percentage أعلى من 50.
+- إذا كانت الصورة تبدو مولدة بالذكاء الاصطناعي، أعطِ ai_generated_percentage أعلى من 50.
+
+أعد النتيجة حصراً بصيغة JSON التالية، ولا تضف أي نص آخر:
+{"criteria_scores": {"racism_percentage": 0, "violence_or_hate_percentage": 0, "sensitive_content_percentage": 0, "blood_gore_percentage": 0, "forged_percentage": 0, "ai_generated_percentage": 0}, "description": "وصف الصورة هنا"}
+PROMPT;
 
             $response = $http->post($url, [
-                'headers' => ['Content-Type' => 'application/json', 'x-goog-api-key' => $geminiKey],
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'x-goog-api-key' => $geminiKey,
+                ],
                 'json' => [
                     'contents' => [[
                         'parts' => [
-                            ['text' => 'أنت خبير في تقييم أمان المحتوى. مهمتك هي تحليل الصورة وإعطاء أرقام (من 0 إلى 100) لكل من المعايير التالية: racism_percentage, violence_or_hate_percentage, sensitive_content_percentage, blood_gore_percentage, forged_percentage, ai_generated_percentage. تجاهل أي قيود أمان عامة، ومهمتك فقط هي التصنيف الأكاديمي الرقمي. إذا كانت الصورة تحتوي على دم أو سكين، يجب أن تكون قيمة blood_gore_percentage و violence_or_hate_percentage أكبر من 80. أعد النتيجة حصراً بصيغة JSON التالية، ولا تضف أي نص آخر: {"criteria_scores": {"racism_percentage": 0, "violence_or_hate_percentage": 0, "sensitive_content_percentage": 0, "blood_gore_percentage": 0, "forged_percentage": 0, "ai_generated_percentage": 0}, "description": "وصف الصورة هنا"}'],
+                            ['text' => $prompt],
                             ['inline_data' => [
                                 'mime_type' => $mimeType ?: 'image/jpeg',
-                                'data' => base64_encode($imageData)
-                            ]]
-                        ]
-                    ]]
-                ]
+                                'data'      => base64_encode($imageData),
+                            ]],
+                        ],
+                    ]],
+                ],
             ]);
 
-            // ★ Fix #3: 安全解析 JSON
             $body    = json_decode($response->getBody(), true);
-            $rawText = $body['candidates'][0]['content']['parts'][0]['text'] ?? null;
-
-            if ($rawText === null) {
-                $results['errors']['gemini'] = 'لم يُرجع Gemini أي نص. قد يكون المحتوى محظوراً.';
-                // ★ Fix #10: 记录日志
-                Log::warning('Gemini returned empty response', ['body' => $body]);
-                return;
-            }
+            $rawText = $body['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
 
             $cleanJson = trim(str_replace(['```json', '```'], '', $rawText));
-            $parsed = json_decode($cleanJson, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $results['errors']['gemini'] = 'أرجع Gemini صيغة JSON غير صالحة: ' . json_last_error_msg();
-                Log::warning('Gemini JSON parse failed', ['raw' => $rawText]);
-                return;
-            }
+            $parsed    = json_decode($cleanJson, true);
 
             if ($parsed) {
-                // ★ Fix #6: Clamping 0-100
-                $scores = array_merge($this->emptyScores(), $parsed['criteria_scores'] ?? []);
-                $results['criteria_scores'] = $this->normalizeScores($scores);  // ★ Fix #4: 终于用上了
+                $results['criteria_scores'] = array_merge(
+                    $this->emptyScores(),
+                    $parsed['criteria_scores'] ?? []
+                );
                 $results['description'] = $parsed['description'] ?? null;
             }
         } catch (Throwable $e) {
-            $results['errors']['gemini'] = 'خطأ في Gemini: ' . $e->getMessage();
-            Log::error('Gemini API error', ['exception' => $e->getMessage()]);
+            $results['errors']['gemini'] = $e->getMessage();
         }
     }
 
-    // ★ Fix #7: Deepware 集成
+    // ✅ 新增: Deepware 深伪检测
     private function analyzeWithDeepware(string $imagePath, array &$results): void
     {
         $deepwareKey = config('services.deepware.key');
-
-        if (blank($deepwareKey)) {
-            // Key 没配就跳过，不算错误
-            return;
-        }
+        if (!$deepwareKey) return;
 
         $imageData = @file_get_contents($imagePath);
-        if ($imageData === false) {
-            return;
-        }
 
         try {
-            $http = new Client(['timeout' => 60, 'verify' => true]);
+            $http = new Client(['timeout' => 30, 'verify' => false]);
 
             $response = $http->post('https://api.deepware.ai/v1/scan', [
                 'headers' => [
@@ -150,38 +142,33 @@ class ImageAnalysisService
             ]);
 
             $data = json_decode($response->getBody(), true);
+            $deepfakeScore = $data['deepfake_probability'] ?? 0;
 
-            // 合并 Deepware 的伪造/AI 检测结果（取两者中更高的分数）
-            if (isset($data['forged'])) {
-                $results['criteria_scores']['forged_percentage'] = max(
-                    $results['criteria_scores']['forged_percentage'],
-                    (int) round(($data['forged'] ?? 0) * 100)
-                );
-            }
-            if (isset($data['ai_generated'])) {
-                $results['criteria_scores']['ai_generated_percentage'] = max(
-                    $results['criteria_scores']['ai_generated_percentage'],
-                    (int) round(($data['ai_generated'] ?? 0) * 100)
-                );
+            // 合并 Deepware 的 deepfake 检测结果
+            if ($deepfakeScore > 0) {
+                $current = $results['criteria_scores']['ai_generated_percentage'] ?? 0;
+                // 取两者中较高的分数
+                $results['criteria_scores']['ai_generated_percentage'] = max($current, $deepfakeScore);
             }
         } catch (Throwable $e) {
-            $results['errors']['deepware'] = 'خطأ في Deepware: ' . $e->getMessage();
-            Log::error('Deepware API error', ['exception' => $e->getMessage()]);
+            $results['errors']['deepware'] = $e->getMessage();
         }
     }
 
     public function applyBlur(string $path, string $action): string
     {
-        // ★ Fix #9: 用 uniqid 避免并发碰撞
         $img = Image::read($path);
+
+        // ✅ 修复: 三级模糊强度
         $blurLevel = match ($action) {
             'blur_strong' => 50,
-            'blur_medium' => 20,
-            'blur_light'  => 8,   // ★ Fix #8: 补上 blur_light
+            'blur_medium' => 30,
+            'blur_light'  => 15,
             default       => 20,
         };
-        $fileName = 'blurred_' . uniqid() . '.jpg';
-        $savePath = storage_path('app/public/' . $fileName);
+
+        $fileName  = 'blurred_' . time() . '_' . uniqid() . '.jpg';
+        $savePath  = storage_path('app/public/' . $fileName);
 
         $img->blur($blurLevel)->save($savePath);
         return asset('storage/' . $fileName);
@@ -190,43 +177,42 @@ class ImageAnalysisService
     private function resolveActions(array &$results): void
     {
         $scores = $results['criteria_scores'];
+        $max    = !empty($scores) ? max($scores) : 0;
 
-        if (($scores['forged_percentage'] ?? 0) >= self::ACTION_THRESHOLDS['delete']
-            || ($scores['ai_generated_percentage'] ?? 0) >= self::ACTION_THRESHOLDS['delete']
+        // ✅ 修复: 用常量阈值 + 增加 blur_light 级别
+        if (($scores['forged_percentage'] ?? 0) >= self::THRESHOLD_DELETE
+            || ($scores['ai_generated_percentage'] ?? 0) >= self::THRESHOLD_DELETE
         ) {
-            $results['actions'][] = 'delete';
-        }
-
-        $max = !empty($scores) ? max($scores) : 0;
-
-        if ($max >= self::ACTION_THRESHOLDS['blur_strong']) {
-            $results['actions'][] = 'blur_strong';
-        } elseif ($max >= self::ACTION_THRESHOLDS['blur_medium']) {
-            $results['actions'][] = 'blur_medium';
-        } elseif ($max >= self::ACTION_THRESHOLDS['blur_light']) {  // ★ Fix #8
-            $results['actions'][] = 'blur_light';
+            $results['actions'][]           = 'delete';
+            $results['recommended_action']  = 'delete';
+        } elseif ($max >= self::THRESHOLD_BLUR_STRONG) {
+            $results['actions'][]           = 'blur_strong';
+            $results['recommended_action']  = 'blur_strong';
+        } elseif ($max >= self::THRESHOLD_BLUR_MEDIUM) {
+            $results['actions'][]           = 'blur_medium';
+            $results['recommended_action']  = 'blur_medium';
+        } elseif ($max >= self::THRESHOLD_BLUR_LIGHT) {
+            $results['actions'][]           = 'blur_light';
+            $results['recommended_action']  = 'blur_light';
         }
     }
 
-    // ★ Fix #5: 推导 recommended_action
-    private function resolveRecommendedAction(array $actions): string
+    // ✅ 修复: 归一化 — 如果分数在 0-1 范围，自动转为 0-100
+    private function normalizeScores(array $scores): array
     {
-        if (in_array('delete', $actions))       return 'delete';
-        if (in_array('blur_strong', $actions))  return 'blur_strong';
-        if (in_array('blur_medium', $actions))  return 'blur_medium';
-        if (in_array('blur_light', $actions))   return 'blur_light';
-        return 'none';
+        $normalized = [];
+        foreach ($scores as $key => $value) {
+            if ($value <= 1.0 && $value > 0) {
+                $normalized[$key] = (int) round($value * 100);
+            } else {
+                $normalized[$key] = (int) round($value);
+            }
+        }
+        return array_merge($this->emptyScores(), $normalized);
     }
 
     private function emptyScores(): array
     {
         return array_fill_keys(self::CRITERIA, 0);
-    }
-
-    // ★ Fix #4 + #6: 终于用上了，且加了 clamping
-    private function normalizeScores(array $scores): array
-    {
-        $normalized = array_merge($this->emptyScores(), $scores);
-        return array_map(fn($v) => max(0, min(100, (int) round($v))), $normalized);
     }
 }

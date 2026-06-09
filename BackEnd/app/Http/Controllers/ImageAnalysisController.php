@@ -52,14 +52,16 @@ public function analyze(Request $request, ImageAnalysisService $service)
 
     // 3. تحويل النتيجة للصيغة المطلوبة (مسطّحة)
     return response()->json([
-        'racism'            => ($scores['racism_percentage'] ?? 0) / 100,
-        'violence'          => ($scores['violence_or_hate_percentage'] ?? 0) / 100,
-        'sensitive_content' => ($scores['sensitive_content_percentage'] ?? 0) / 100,
-        'blood'             => ($scores['blood_gore_percentage'] ?? 0) / 100,
-        'ai_generated'      => ($scores['ai_generated_percentage'] ?? 0) >= 70,
-        'forged'            => ($scores['forged_percentage'] ?? 0) >= 70,
-        'description'       => $results['description'] ?? '',
-        'actions'           => $results['actions'],
+        'racism'                  => $scores['racism_percentage'] ?? 0,
+        'violence'                => $scores['violence_or_hate_percentage'] ?? 0,
+        'sensitive_content'       => $scores['sensitive_content_percentage'] ?? 0,
+        'blood'                   => $scores['blood_gore_percentage'] ?? 0,
+        'ai_generated'            => ($scores['ai_generated_percentage'] ?? 0) >= 70,
+        'forged'                  => ($scores['forged_percentage'] ?? 0) >= 70,
+        'ai_generated_percentage' => $scores['ai_generated_percentage'] ?? 0,
+        'forged_percentage'       => $scores['forged_percentage'] ?? 0,
+        'description'             => $results['description'] ?? '',
+        'actions'                 => $results['actions'],
         ...( $blurredImageUrl ? ['blurred_image_url' => $blurredImageUrl] : []),
     ]);
 }
