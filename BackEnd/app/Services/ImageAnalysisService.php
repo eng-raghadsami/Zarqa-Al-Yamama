@@ -41,29 +41,42 @@ class ImageAnalysisService
     private function analyzeWithGemini(string $imagePath, ?string $mimeType, array &$results): void
     {
         $geminiKey = config('services.gemini.key');
-        $geminiModel = config('services.gemini.model', 'gemini-2.0-flash');
+        // تأكدي أن هذا الموديل موجود في حسابك أو استخدمي 'gemini-1.5-flash'
+        $geminiModel = config('services.gemini.model', 'gemini-1.5-flash');
 
         $imageData = @file_get_contents($imagePath);
 
         try {
             $http = new Client(['timeout' => 60, 'verify' => false]);
-            $response = $http->post(
-                "https://generativelanguage.googleapis.com/v1/models/{$geminiModel}:generateContent",
-                [
-                    'headers' => ['Content-Type' => 'application/json', 'x-goog-api-key' => $geminiKey],
-                    'json' => [
-                        'contents' => [['parts' => [
-                            ['text' => 'حلّل الصورة كخبير إشراف محتوى وأعد JSON فقط بالمعايير المحددة.'],
-                            ['inline_data' => ['mime_type' => $mimeType, 'data' => base64_encode($imageData)]]
-                        ]]],
-                    ]
+
+            // استخدام v1beta وهو الإصدار الذي يدعم موديلات Gemini Flash
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/{$geminiModel}:generateContent";
+
+            $response = $http->post($url, [
+                'headers' => ['Content-Type' => 'application/json', 'x-goog-api-key' => $geminiKey],
+                'json' => [
+                    'contents' => [[
+                        'parts' => [
+                            ['text' => 'حلّل الصورة كخبير إشراف محتوى وأعد JSON فقط بالمعايير التالية: racism_percentage, violence_or_hate_percentage, sensitive_content_percentage, blood_gore_percentage, forged_percentage, ai_generated_percentage, description. لا تضع أي نصوص خارجية.'],
+                            ['inline_data' => [
+                                'mime_type' => $mimeType ?: 'image/jpeg',
+                                'data' => base64_encode($imageData)
+                            ]]
+                        ]
+                    ]]
                 ]
-            );
+            ]);
 
             $body = json_decode($response->getBody(), true);
-            $parsed = json_decode($body['candidates'][0]['content']['parts'][0]['text'], true);
+            $rawText = $body['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
+
+            // تنظيف النص في حال وجود ماركداون
+            $cleanJson = str_replace(['```json', '```'], '', $rawText);
+            $parsed = json_decode(trim($cleanJson), true);
+
             $results['criteria_scores'] = $this->normalizeScores($parsed['criteria_scores'] ?? []);
             $results['description'] = $parsed['description'] ?? null;
+
         } catch (Throwable $e) {
             $results['errors']['gemini'] = $e->getMessage();
         }
@@ -85,7 +98,7 @@ class ImageAnalysisService
         $scores = $results['criteria_scores'];
         $max = max($scores);
 
-        if (max($scores['forged_percentage'], $scores['ai_generated_percentage']) >= 70) {
+        if (($scores['forged_percentage'] ?? 0) >= 70 || ($scores['ai_generated_percentage'] ?? 0) >= 70) {
             $results['actions'][] = 'delete';
         } elseif ($max >= 80) {
             $results['actions'][] = 'blur_strong';
@@ -95,5 +108,5 @@ class ImageAnalysisService
     }
 
     private function emptyScores(): array { return array_fill_keys(self::CRITERIA, 0); }
-    private function normalizeScores(array $scores): array { /* منطق التنسيق */ return $scores; }
+    private function normalizeScores(array $scores): array { return array_merge($this->emptyScores(), $scores); }
 }
