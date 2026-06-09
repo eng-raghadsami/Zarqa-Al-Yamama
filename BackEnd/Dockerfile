@@ -1,21 +1,28 @@
+# 1. استخدام صورة PHP الرسمية
 FROM php:8.2-cli
 
+# 2. تثبيت المكتبات الأساسية (التي تسببت في الخطأ سابقاً)
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     libssl-dev \
     ca-certificates \
+    libpq-dev \
+    git \
+    unzip \
     && docker-php-ext-install pdo pdo_pgsql zip \
     && update-ca-certificates
 
+# 3. تثبيت Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# 4. إعداد المجلد
 WORKDIR /app
 
-# نسخ ملفات Composer أولاً
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
-
-# نسخ باقي المشروع
+# 5. نسخ الملفات
 COPY . .
 
-# لا تشغلي l5-swagger أثناء الـ Build إذا كان يسبب تعليقاً
+# 6. تثبيت المكتبات (بدون Dev لتقليل الأخطاء)
+RUN composer install --no-dev --optimize-autoloader
+
+# 7. أمر التشغيل النهائي
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
