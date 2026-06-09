@@ -16,7 +16,7 @@ WORKDIR /app
 COPY . .
 
 # تثبيت الـ dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 # توليد Swagger docs أثناء الـ build (لا يحتاج قاعدة بيانات)
 RUN php artisan l5-swagger:generate || true
 
