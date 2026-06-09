@@ -29,26 +29,38 @@ class ImageAnalysisController extends Controller
             new OA\Response(response: 422, description: 'Validation error')
         ]
     )]
-    public function analyze(Request $request, ImageAnalysisService $service)
-    {
-        $request->validate([
-            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:10240'
-        ]);
+public function analyze(Request $request, ImageAnalysisService $service)
+{
+    $request->validate([
+        'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:10240'
+    ]);
 
-        $file = $request->file('image');
-        $path = $file->getRealPath();
+    $file = $request->file('image');
+    $path = $file->getRealPath();
 
-        $results = $service->analyze($path, $file->getMimeType());
+    // 1. استدعاء الخدمة
+    $results = $service->analyze($path, $file->getMimeType());
+    $scores = $results['criteria_scores'];
 
-        // 应用模糊处理（仅当 action 不是 delete 时）
-        foreach ($results['actions'] as $action) {
-            if (in_array($action, ['blur_strong', 'blur_medium', 'blur_light'])) {
-                $results['blurred_image_url'] = $service->applyBlur($path, $action);
-            }
+    // 2. تطبيق التغبيش بناءً على الـ Actions
+    $blurredImageUrl = null;
+    foreach ($results['actions'] as $action) {
+        if (in_array($action, ['blur_strong', 'blur_medium', 'blur_light'])) {
+            $blurredImageUrl = $service->applyBlur($path, $action);
         }
-
-        return response()->json([
-            'analysis' => $results,
-        ]);
     }
+
+    // 3. تحويل النتيجة للصيغة المطلوبة (مسطّحة)
+    return response()->json([
+        'racism'            => ($scores['racism_percentage'] ?? 0) / 100,
+        'violence'          => ($scores['violence_or_hate_percentage'] ?? 0) / 100,
+        'sensitive_content' => ($scores['sensitive_content_percentage'] ?? 0) / 100,
+        'blood'             => ($scores['blood_gore_percentage'] ?? 0) / 100,
+        'ai_generated'      => ($scores['ai_generated_percentage'] ?? 0) >= 70,
+        'forged'            => ($scores['forged_percentage'] ?? 0) >= 70,
+        'description'       => $results['description'] ?? '',
+        'actions'           => $results['actions'],
+        ...( $blurredImageUrl ? ['blurred_image_url' => $blurredImageUrl] : []),
+    ]);
+}
 }
