@@ -18,9 +18,8 @@ COPY . .
 # تثبيت الـ dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# توليد Swagger docs أثناء الـ build
-RUN php artisan migrate --force || true \
-    && php artisan l5-swagger:generate || true
+# توليد Swagger docs أثناء الـ build (لا يحتاج قاعدة بيانات)
+RUN php artisan l5-swagger:generate || true
 
-# تشغيل السيرفر
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# تشغيل الـ migrations عند الإقلاع (وقت توفر بيانات الاتصال بقاعدة البيانات) ثم تشغيل السيرفر
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
