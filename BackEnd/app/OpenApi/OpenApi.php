@@ -10,11 +10,11 @@ use OpenApi\Attributes as OA;
     description: "API Documentation"
 )]
 #[OA\Server(
-    url: "http://127.0.0.1:8000",
-    description: "Local Server"
-)]
-#[OA\Server(
     url: "https://zurqa-al-yamama.onrender.com",
     description: "Production Server"
+)]
+#[OA\Server(
+    url: "http://127.0.0.1:8000",
+    description: "Local Server"
 )]
 class OpenApi {}
