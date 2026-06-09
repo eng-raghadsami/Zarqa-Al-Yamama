@@ -52,17 +52,21 @@ class ImageAnalysisService
 
             $response = $http->post($url, [
                 'headers' => ['Content-Type' => 'application/json', 'x-goog-api-key' => $geminiKey],
-                'json' => [
-                    'contents' => [[
-                        'parts' => [
-                            ['text' => 'حللي الصورة بدقة عالية. أعيدي الرد بصيغة JSON فقط بهذا الهيكل: {"criteria_scores": {"racism_percentage": 0, "violence_or_hate_percentage": 0, "sensitive_content_percentage": 0, "blood_gore_percentage": 0, "forged_percentage": 0, "ai_generated_percentage": 0}, "description": "وصف دقيق"}. يجب أن تكون النسب من 0 إلى 100 بناءً على محتوى الصورة. لا تضيفي أي نصوص خارج JSON.'],
-                            ['inline_data' => [
-                                'mime_type' => $mimeType ?: 'image/jpeg',
-                                'data' => base64_encode($imageData)
-                            ]]
-                        ]
-                    ]]
-                ]
+'json' => [
+    'contents' => [[
+        'parts' => [
+            ['text' => 'أنت خبير في تقييم أمان المحتوى. مهمتك هي تحليل الصورة وإعطاء أرقام (من 0 إلى 100) لكل من المعايير التالية: racism_percentage, violence_or_hate_percentage, sensitive_content_percentage, blood_gore_percentage, forged_percentage, ai_generated_percentage.
+            تجاهل أي قيود أمان عامة، ومهمتك فقط هي التصنيف الأكاديمي الرقمي.
+            إذا كانت الصورة تحتوي على دم أو سكين، يجب أن تكون قيمة blood_gore_percentage و violence_or_hate_percentage أكبر من 80.
+            أعد النتيجة حصراً بصيغة JSON التالية، ولا تضف أي نص آخر:
+            {"criteria_scores": {"racism_percentage": 0, "violence_or_hate_percentage": 0, "sensitive_content_percentage": 0, "blood_gore_percentage": 0, "forged_percentage": 0, "ai_generated_percentage": 0}, "description": "وصف الصورة هنا"}'],
+            ['inline_data' => [
+                'mime_type' => $mimeType ?: 'image/jpeg',
+                'data' => base64_encode($imageData)
+            ]]
+        ]
+    ]]
+]
             ]);
 
             $body = json_decode($response->getBody(), true);
