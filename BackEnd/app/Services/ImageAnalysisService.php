@@ -48,7 +48,7 @@ class ImageAnalysisService
         try {
             $http = new Client(['timeout' => 60, 'verify' => false]);
             $response = $http->post(
-                "https://generativelanguage.googleapis.com/v1beta/models/{$geminiModel}:generateContent",
+                "https://generativelanguage.googleapis.com/v1/models/{$geminiModel}:generateContent",
                 [
                     'headers' => ['Content-Type' => 'application/json', 'x-goog-api-key' => $geminiKey],
                     'json' => [

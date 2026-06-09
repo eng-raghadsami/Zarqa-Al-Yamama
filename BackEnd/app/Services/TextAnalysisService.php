@@ -33,7 +33,7 @@ class TextAnalysisService
     private function analyzeWithGemini(string $text, array &$results): void
     {
         $geminiKey = config('services.gemini.key');
-        $geminiModel = config('services.gemini.model', 'gemini-2.5-flash');
+        $geminiModel = config('services.gemini.model', 'gemini-1.5-flash');
 
         if (blank($geminiKey)) {
             $results['errors']['gemini'] = 'مفتاح Gemini غير مضبوط في ملف .env.';
@@ -53,7 +53,7 @@ class TextAnalysisService
             النص: {$text}";
 
             $response = $http->post(
-                "https://generativelanguage.googleapis.com/v1beta/models/{$geminiModel}:generateContent",
+                "https://generativelanguage.googleapis.com/v1/models/{$geminiModel}:generateContent",
                 [
                     'headers' => ['Content-Type' => 'application/json', 'x-goog-api-key' => $geminiKey],
                     'json' => [
