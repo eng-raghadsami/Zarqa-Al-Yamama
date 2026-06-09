@@ -7,6 +7,22 @@ use App\Services\ImageAnalysisService;
 
 class ImageAnalysisController extends Controller
 {
+    /**
+     * @OA\Post(
+     * path="/api/images/analyze",
+     * summary="Analyze an image for safety",
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\MediaType(
+     * mediaType="multipart/form-data",
+     * @OA\Schema(
+     * @OA\Property(property="image", type="string", format="binary")
+     * )
+     * )
+     * ),
+     * @OA\Response(response=200, description="Successful analysis")
+     * )
+     */
     public function analyze(Request $request, ImageAnalysisService $service)
     {
         $request->validate([
