@@ -9,21 +9,188 @@
         {
             "url": "https://zurqa-al-yamama.onrender.com",
             "description": "Production Server"
+        },
+        {
+            "url": "/api"
         }
     ],
     "paths": {
+        "/api/contents": {
+            "get": {
+                "tags": [
+                    "Contents"
+                ],
+                "summary": "Get all contents",
+                "operationId": "794455e2ae76f0d16390c0d65573e5cf",
+                "responses": {
+                    "200": {
+                        "description": "List of contents"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Contents"
+                ],
+                "summary": "Create a new content",
+                "operationId": "28ee10be1de60782f9ecf184dbf4c4cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "New Content"
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "example": "Content details"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "draft"
+                                    },
+                                    "updated_by": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Content created successfully"
+                    },
+                    "422": {
+                        "description": "Validation or create error"
+                    }
+                }
+            }
+        },
+        "/api/contents/{id}": {
+            "get": {
+                "tags": [
+                    "Contents"
+                ],
+                "summary": "Get a single content",
+                "operationId": "1860dae49ccefc184b1d6d84b27039ae",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Content details"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Contents"
+                ],
+                "summary": "Update a content",
+                "operationId": "37af1b4468fb29809a50b7567eebcaec",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Updated Content Title"
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "example": "Updated content details"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "approved"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Content updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Contents"
+                ],
+                "summary": "Delete a content",
+                "operationId": "269ed286f9e98033c9e8ecafb43d005d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Content deleted successfully"
+                    }
+                }
+            }
+        },
         "/api/images/analyze": {
             "post": {
                 "tags": [
                     "Images"
                 ],
-                "summary": "Analyze an uploaded image",
+                "summary": "Analyze an image for safety",
                 "operationId": "0f83a75a8d1dfbb660ebdbdd28598834",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
+                                "required": [
+                                    "image"
+                                ],
                                 "properties": {
                                     "image": {
                                         "type": "string",
@@ -37,7 +204,200 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Analysis result"
+                        "description": "Successful analysis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "racism": {
+                                            "type": "integer"
+                                        },
+                                        "violence": {
+                                            "type": "integer"
+                                        },
+                                        "sensitive_content": {
+                                            "type": "integer"
+                                        },
+                                        "blood": {
+                                            "type": "integer"
+                                        },
+                                        "ai_generated": {
+                                            "type": "boolean"
+                                        },
+                                        "forged": {
+                                            "type": "boolean"
+                                        },
+                                        "ai_generated_percentage": {
+                                            "type": "integer"
+                                        },
+                                        "forged_percentage": {
+                                            "type": "integer"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "actions": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "criteria_scores": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        },
+                                        "blurred_image_url": {
+                                            "type": "string",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/published": {
+            "get": {
+                "tags": [
+                    "Published"
+                ],
+                "summary": "Get all published contents",
+                "operationId": "2c7ee7653e6d760543f7c3557828b512",
+                "responses": {
+                    "200": {
+                        "description": "List of published contents"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Published"
+                ],
+                "summary": "Create a new published content",
+                "operationId": "8f88a4c0f27509b62c4d8625fb326490",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "content_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "journalist_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "editor_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Published content created successfully"
+                    }
+                }
+            }
+        },
+        "/api/published/{id}": {
+            "get": {
+                "tags": [
+                    "Published"
+                ],
+                "summary": "Get a single published content",
+                "operationId": "fefcf5260f91ff3effef07352f42cf0a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Published content details"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Published"
+                ],
+                "summary": "Update a published content",
+                "operationId": "b42d1a56b35cd53e047af60143225f30",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "editor_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "updater_id": {
+                                        "type": "integer",
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Published content updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Published"
+                ],
+                "summary": "Delete a published content",
+                "operationId": "1f68a7be8a4669bca7459a5a44f2ddc6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Published content deleted successfully"
                     }
                 }
             }
@@ -257,12 +617,70 @@
                     }
                 }
             }
+        },
+        "/api/published/{id}/broadcast/audio": {
+            "post": {
+                "tags": [
+                    "Broadcasts"
+                ],
+                "summary": "Generate audio broadcast for a published article using ElevenLabs",
+                "operationId": "f9d4954963c9279c81cf74dd84edd6f5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "voice_id": {
+                                        "type": "string",
+                                        "example": "pNInz6obpgDQGcFmaJgB"
+                                    },
+                                    "model_id": {
+                                        "type": "string",
+                                        "example": "eleven_multilingual_v2"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Audio generated (or fetched from cache)"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "ElevenLabs API error"
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
+            "name": "Contents",
+            "description": "Contents"
+        },
+        {
             "name": "Images",
             "description": "Images"
+        },
+        {
+            "name": "Published",
+            "description": "Published"
         },
         {
             "name": "Terms",
@@ -271,6 +689,10 @@
         {
             "name": "Texts",
             "description": "Texts"
+        },
+        {
+            "name": "Broadcasts",
+            "description": "Broadcasts"
         }
     ]
 }

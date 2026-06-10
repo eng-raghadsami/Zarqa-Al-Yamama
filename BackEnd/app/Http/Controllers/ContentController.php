@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\Content;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
+use Illuminate\Support\Facades\Auth;
 
 class ContentController extends Controller
+
 {
     #[OA\Get(
         path: '/api/contents',
@@ -29,10 +31,8 @@ class ContentController extends Controller
                 properties: [
                     new OA\Property(property: 'title', type: 'string', example: 'New Content'),
                     new OA\Property(property: 'body', type: 'string', example: 'Content details'),
-                    new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                    new OA\Property(property: 'category_id', type: 'integer', example: 2),
-                    new OA\Property(property: 'status', type: 'string', example: 'draft'),
-                    new OA\Property(property: 'updated_by', type: 'integer', example: 1)
+                    // user/category/status/updated_by are filled by backend defaults
+
                 ]
             )
         ),
@@ -46,14 +46,36 @@ class ContentController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string'],
-            'user_id' => ['required', 'integer', 'exists:users,id'],
-            'category_id' => ['required', 'integer', 'exists:categories,id'],
-            'status' => ['required', 'string', 'max:50'],
-            'updated_by' => ['nullable', 'integer', 'exists:users,id'],
         ]);
 
         try {
-            $content = Content::create($validated);
+            // Fill required DB columns with safe defaults.
+            // NOTE: this project currently requires user_id and category_id in DB (non-nullable).
+            // We auto-fill from authenticated user when available; otherwise we fall back to the first user/category.
+            $fallbackUserId = \App\Models\User::query()->value('id');
+            $fallbackCategoryId = \App\Models\Category::query()->value('id');
+
+            $userId = Auth::id() ?? $fallbackUserId;
+
+            $categoryId = $fallbackCategoryId;
+
+
+            if (blank($userId) || blank($categoryId)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot create content: missing user_id or category_id and no fallback exists.',
+                ], 422);
+            }
+
+            $content = Content::create([
+                'title' => $validated['title'],
+                'body' => $validated['body'],
+                'user_id' => $userId,
+                'category_id' => $categoryId,
+                'status' => 'draft',
+                'updated_by' => $userId,
+            ]);
+
             return response()->json(['success' => true, 'content' => $content], 201);
         } catch (\Throwable $e) {
             return response()->json([
@@ -63,6 +85,7 @@ class ContentController extends Controller
             ], 422);
         }
     }
+
 
     #[OA\Get(
         path: '/api/contents/{id}',

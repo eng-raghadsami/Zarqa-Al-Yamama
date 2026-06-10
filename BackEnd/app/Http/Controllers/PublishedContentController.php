@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\PublishedContent;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
+use Illuminate\Support\Facades\Auth;
+
 
 class PublishedContentController extends Controller
 {
@@ -24,18 +26,56 @@ class PublishedContentController extends Controller
         tags: ['Published'],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(properties: [
-                new OA\Property(property: 'content_id', type: 'integer', example: 1),
-                new OA\Property(property: 'journalist_id', type: 'integer', example: 2),
-                new OA\Property(property: 'editor_id', type: 'integer', example: 3)
-            ])
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'content_id', type: 'integer', example: 1)
+                ]
+            )
         ),
-        responses: [new OA\Response(response: 201, description: 'Published content created successfully')]
+        responses: [
+            new OA\Response(response: 201, description: 'Published content created successfully')
+        ]
     )]
     public function store(Request $request)
     {
-        $published = PublishedContent::create($request->all());
-        return response()->json(['success' => true, 'published' => $published]);
+        $validated = $request->validate([
+            'content_id' => ['required', 'integer', 'exists:contents,id'],
+        ]);
+
+        try {
+            $userId = Auth::id();
+
+
+
+            // journalist_id/editor_id are NOT nullable in DB, so we must provide them.
+            // Prefer authenticated user; otherwise fall back to the first user in DB.
+            $fallbackUserId = \App\Models\User::query()->value('id');
+            $journalistId = $userId ?? $fallbackUserId;
+            $editorId = $userId ?? $fallbackUserId;
+
+            if (blank($journalistId) || blank($editorId)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot publish: missing journalist_id/editor_id (no authenticated user and no fallback user).',
+                ], 422);
+            }
+
+            $published = PublishedContent::create([
+                'content_id' => $validated['content_id'],
+                'journalist_id' => $journalistId,
+                'editor_id' => $editorId,
+                'published_at' => now(),
+                'updated_by' => $editorId,
+            ]);
+
+            return response()->json(['success' => true, 'published' => $published]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create published content.',
+                'error' => $e->getMessage(),
+            ], 422);
+        }
     }
 
     #[OA\Get(
