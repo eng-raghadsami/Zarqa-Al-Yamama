@@ -53,17 +53,15 @@ class PublishedContentController extends Controller
             $journalistId = $userId ?? $fallbackUserId;
             $editorId = $userId ?? $fallbackUserId;
 
-            if (blank($journalistId) || blank($editorId)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cannot publish: missing journalist_id/editor_id (no authenticated user and no fallback user).',
-                ], 422);
-            }
 
+
+            // Fill required DB columns. If there is no authenticated user and no users in DB,
+            // DB constraints will throw a clear error.
             $published = PublishedContent::create([
                 'content_id' => $validated['content_id'],
                 'journalist_id' => $journalistId,
                 'editor_id' => $editorId,
+
                 'published_at' => now(),
                 'updated_by' => $editorId,
             ]);

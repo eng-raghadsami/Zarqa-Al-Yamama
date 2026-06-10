@@ -56,17 +56,13 @@ class ContentController extends Controller
             $fallbackCategoryId = \App\Models\Category::query()->value('id');
 
             // API contract: client sends only title + body.
-            // DB contract: contents.user_id and contents.category_id are non-nullable,
-            // so we must provide values. We prefer authenticated user, otherwise first DB records.
+            // DB contract: contents.user_id and contents.category_id are non-nullable.
+            // Prefer authenticated user/category defaults; otherwise use fallback IDs.
             $userId = Auth::id() ?? $fallbackUserId;
             $categoryId = $fallbackCategoryId;
 
-            if (blank($userId) || blank($categoryId)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cannot create content: no authenticated user and no fallback user/category exists in DB.',
-                ], 422);
-            }
+
+
 
             $content = Content::create([
 
