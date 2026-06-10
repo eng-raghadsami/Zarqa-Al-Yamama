@@ -61,17 +61,30 @@ class ContentController extends Controller
             $userId = Auth::id() ?? $fallbackUserId;
             $categoryId = $fallbackCategoryId;
 
+            if (blank($userId) || blank($categoryId)) {
+                // Create a system record only when DB doesn't have any users/categories.
+                // This removes the need for auth/authorized users.
+                $user = \App\Models\User::firstOrCreate(
+                    ['email' => 'system@example.com'],
+                    ['name' => 'System', 'password' => bcrypt('system')]
+                );
+                $category = \App\Models\Category::firstOrCreate(
+                    ['name' => 'General']
+                );
 
-
+                $userId = $user->id;
+                $categoryId = $category->id;
+            }
 
             $content = Content::create([
-
                 'title' => $validated['title'],
+
                 'body' => $validated['body'],
                 'user_id' => $userId,
                 'category_id' => $categoryId,
                 'status' => 'draft',
                 'updated_by' => $userId,
+
             ]);
 
             return response()->json(['success' => true, 'content' => $content], 201);

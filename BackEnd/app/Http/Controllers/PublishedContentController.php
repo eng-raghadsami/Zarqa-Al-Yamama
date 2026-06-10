@@ -56,8 +56,20 @@ class PublishedContentController extends Controller
 
 
             // Fill required DB columns. If there is no authenticated user and no users in DB,
-            // DB constraints will throw a clear error.
+            // we create a system user for journalist/editor.
+            if (blank($journalistId) || blank($editorId)) {
+                $user = \App\Models\User::firstOrCreate(
+                    ['email' => 'system@example.com'],
+                    ['name' => 'System', 'password' => bcrypt('system')]
+                );
+
+                $journalistId = $user->id;
+                $editorId = $user->id;
+            }
+
+
             $published = PublishedContent::create([
+
                 'content_id' => $validated['content_id'],
                 'journalist_id' => $journalistId,
                 'editor_id' => $editorId,
